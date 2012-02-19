@@ -1,0 +1,273 @@
+<html>
+  <head>
+    <title>JavaScript-Pong</title>
+  </head>
+  <body bgcolor="#000000" text="#00FF00">
+     <basefont face="Courier">
+     <div id="gborder" style="position:absolute; top:0; left:0; width:666; height:500; border: 1px solid #FFFFFF"></div>
+     <div id="net" style="position:absolute; top:0; left:327; width:12; height:500; border: 1px solid #FFFFFF"></div>
+     <div id="ball" style="position:absolute; top:240; left:323; width:20; height:20"><img src="ball.gif"></div>
+     <div id="player1" style="position:absolute; top:200; left:25; width:25; height:100; background-color: #FFFFFF"></div>
+     <div id="player2" style="position:absolute; top:200; left:616; width:25; height:100; background-color: #FFFFFF"></div>
+
+     <div id="keyup" style="position:absolute; top:175; left:716; width:50; height:50; border: 1px dotted #FFFFFF" onMouseOver="movePlayer1(-1)" onMouseOut="movePlayer1(0)"><center><font color="#FFFFFF">UP</font></center></div>
+     <div id="nothing" style="position:absolute; top:225; left:716; width:50; height:50; border: 1px dotted #FFFFFF"><center><font color="#FFFFFF"></font></center></div>
+     <div id="keydown" style="position:absolute; top:275; left:716; width:50; height:50; border: 1px dotted #FFFFFF" onMouseOver="movePlayer1(1)" onMouseOut="movePlayer1(0)"><center><font color="#FFFFFF">DOWN</font></center></div>
+     <div id="pause" style="position:absolute; top:225; left:666; width:50; height:50; border: 1px dotted #FFFFFF" onMouseOver="setPause()"><center><font color="#FFFFFF">PAUSE</font></center></div>
+     <div id="start" style="position:absolute; top:225; left:766; width:50; height:50; border: 1px dotted #FFFFFF" onMouseOver="setStart()"><center><font color="#FFFFFF">START</font></center></div>
+     <div id="restart" style="position:absolute; top:375; left:716; width:50; height:50; border: 1px dotted #FFFFFF" onMouseOver="restart()"><center><font color="#FFFFFF">RE-START</font></center></div>
+
+     <div id="status" style="position:absolute; top: 525; left:233; width:200; height:50; border: 1px dotted #FFFFFF"></div>
+
+     <div id="credits" style="position:absolute; top: 0; left:670; width: 140; height:100; border: 1px dotted #FFFFFF"><font color="#FFFFFF"><b>JavaScript-Pong</b><br>by Alexander Surma aka Crock<br>(c)2004 Hamburg<br>crock@crocks-level.de</font></div>
+     <script language="JavaScript">
+     <!--
+       //INDIVIDUAL DATA
+       var ballspeed = 1.3 //Speed of the ball in pixels per second
+       var increaseballspeed = 0.7 //Speed of the ball will be increased,
+                                   //when you hit the ball in the same direction of the ball.
+       var playerspeed = 1 //Speed of the joist's
+
+       // NO CHANGES BELOW
+       /**
+       /* Settings Player 1
+        **/
+       var P1y = 200 ;
+       var vP1y = 0 ;
+       /**
+       /* Settings Ball
+        **/
+       var Ballx = 323, Bally = 240 ;
+       var vBallx = -ballspeed, vBally = -ballspeed ;
+       /**
+       /* Settings Player 1
+        **/
+       var P2y = 200 ;
+       var vP2y = 0 ;
+       /**
+       /*  Points-Saver
+        **/
+       var PP1 = 0 ;
+       var PP2 = 0 ;
+       var gpause = 1 ;
+
+       function restart()
+       {
+         P1y = 200 ;
+         vP1y = 0 ;
+         P2y = 200 ;
+         vP2y = 0 ;
+         Ballx = 323 ;
+         Bally = 240 ;
+         vBallx = -ballspeed ;
+         vBally = -ballspeed ;
+         PP1 = 0 ;
+         PP2 = 0 ;
+         updateScore() ;
+         draw() ;
+         gpause = 1 ;
+       }
+
+       function getOne()
+       {
+         return (Math.round(Math.random()*1)) == 0 ? -1 : 1 ;
+       }
+
+       function setPause()
+       {
+         gpause = 1;
+       }
+
+       function setStart()
+       {
+         gpause = 0 ;
+       }
+
+       function movePlayer1(a)
+       {
+         vP1y = a*playerspeed ;
+       }
+
+       function updateScore()
+       {
+         document.getElementById("status").innerHTML = "<center><font color='#FFFFFF'>Player <b>"+PP1+"</b>:<b>"+PP2+"</b> CPU</font></center>" ;
+       }
+
+       function refrBall()
+       {
+         Ballx += vBallx ;
+         Bally += vBally ;
+
+         if (Bally <= 1)
+           vBally = -vBally ;
+         if (Bally >= (501 - 20))
+           vBally = -vBally ;
+         if ((Ballx > 53) && (Ballx < 57))
+         {
+           if  (  (  (Bally+10) >= P1y  ) && (  (Bally+10) <= (P1y+100))  )
+           {
+             vBallx = -vBallx ;
+             if (vP1y > 0)
+             {
+               if (vBally > 0)
+               {
+                 vBally += increaseballspeed ;
+               }
+               else if (vBally < 0)
+               {
+                 vBally -= increaseballspeed ;
+               }
+               else
+               {
+                 vBally += increaseballspeed ;
+               }
+             }
+             else if (vP1y < 0)
+             {
+               if (vBally < 0)
+               {
+                 vBally -= increaseballspeed ;
+               }
+               else if (vBally > 0)
+               {
+                 vBally -= increaseballspeed ;
+               }
+               else
+               {
+                 vBally -= increaseballspeed ;
+               }
+
+             }
+           }
+         }
+         if (((Ballx+20) > 614) && ((Ballx+20) < 618))
+         {
+           if (  (  (Bally+10) >= P2y  ) && (  (Bally+10) <= (P2y+100))  )
+           {
+             vBallx = -vBallx ;
+             if (vP2y > 0)
+             {
+               if (vBally > 0)
+               {
+                 vBally += increaseballspeed ;
+               }
+               else if (vBally < 0)
+               {
+                 vBally -= increaseballspeed ;
+               }
+               else
+               {
+                 vBally += increaseballspeed ;
+               }
+             }
+             else if (vP2y < 0)
+             {
+               if (vBally < 0)
+               {
+                 vBally += increaseballspeed ;
+               }
+               else if (vBally > 0)
+               {
+                 vBally -= increaseballspeed ;
+               }
+               else
+               {
+                 vBally -= increaseballspeed ;
+               }
+
+             }
+             else if (vP2y == 0)
+             {
+               if (vBally > 0)
+               {
+                 vBally += increaseballspeed ;
+               }
+               else if (vBally < 0)
+               {
+                 vBally -= increaseballspeed ;
+               }
+             }
+           }
+         }
+         if (Ballx <= 0)
+         {
+           PP2++ ;
+           updateScore() ;
+           Ballx = 323 ;
+           Bally = 240 ;
+           vBallx = ballspeed ;
+           vBallx = ballspeed * getOne();
+           P1y = 200 ;
+           P2y = 200 ;
+           setPause() ;
+         }
+         if (Ballx >= (666-20))
+         {
+           PP1++ ;
+           updateScore() ;
+           Ballx = 323 ;
+           Bally = 240 ;
+           vBallx = -ballspeed ;
+           vBally = ballspeed * getOne() ;
+           P1y = 200 ;
+           P2y = 200 ;
+           setPause() ;
+         }
+
+       }
+
+       function refrP1()
+       {
+         P1y += vP1y ;
+         if (P1y < 0)
+           P1y = 0 ;
+         if (P1y > (500 - 100))
+           P1y = (500 - 100)
+       }
+
+       function doKI()
+       {
+         vP2y = 0 ;
+         if ((Bally+10) < (P2y+50))
+           vP2y = -1*playerspeed ;
+         if ((Bally+10) > (P2y+50))
+           vP2y = 1*playerspeed ;
+       }
+
+       function refrP2()
+       {
+         P2y += vP2y ;
+         if (P2y < 0)
+           P2y = 0 ;
+         if (P2y > (500 - 100))
+           P2y = (500 - 100)
+       }
+
+
+
+       function draw()
+       {
+         if (gpause == 0)
+         {
+           //Player 2
+           doKI() ;
+           refrP2() ;
+
+           //Ball
+           refrBall() ;
+           //Player 1
+           refrP1() ;
+         }
+           document.getElementById ("ball").style.left = Ballx ;
+           document.getElementById ("ball").style.top = Bally ;
+
+           document.getElementById ("player1").style.top = P1y ;
+
+           document.getElementById ("player2").style.top = P2y ;
+       }
+       updateScore() ;
+       setInterval ("draw()", 10) ;
+     //-->
+     </script>
+  </body>
+</html>
